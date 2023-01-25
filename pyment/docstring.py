@@ -85,6 +85,7 @@ def get_leading_spaces(data):
 
 class NumpydocTools(object):
     """ """
+
     def __init__(self, first_line=None,
                  optional_sections=['raise', 'also', 'ref', 'note', 'other', 'example', 'method', 'attr'],
                  excluded_sections=[]):
@@ -115,17 +116,17 @@ class NumpydocTools(object):
         self.optional_sections = list(optional_sections)
         self.excluded_sections = list(excluded_sections)
         self.opt = {
-                'param': 'parameters',
-                'return': 'returns',
-                'raise': 'raises',
-                'also': 'see also',
-                'ref': 'references',
-                'note': 'notes',
-                'other': 'other parameters',
-                'example': 'examples',
-                'method': 'methods',
-                'attr': 'attributes'
-                }
+            'param': 'parameters',
+            'return': 'returns',
+            'raise': 'raises',
+            'also': 'see also',
+            'ref': 'references',
+            'note': 'notes',
+            'other': 'other parameters',
+            'example': 'examples',
+            'method': 'methods',
+            'attr': 'attributes'
+        }
         self.keywords = [':math:', '.. math::', 'see also', '.. image::']
 
     def __iter__(self):
@@ -143,7 +144,7 @@ class NumpydocTools(object):
     def get_mandatory_sections(self):
         return [s for s in self.opt
                 if s not in self.optional_sections and
-                   s not in self.excluded_sections]
+                s not in self.excluded_sections]
 
     def get_next_section_start_line(self, data):
         """Get the starting line number of next section.
@@ -349,6 +350,7 @@ class NumpydocTools(object):
 
 class GoogledocTools(object):
     """ """
+
     def __init__(self, first_line=None,
                  optional_sections=['raise'],
                  excluded_sections=[]):
@@ -372,17 +374,17 @@ class GoogledocTools(object):
         self.optional_sections = list(optional_sections)
         self.excluded_sections = list(excluded_sections)
         self.opt = {
-                'param': 'args',
-                'return': 'returns',
-                'raise': 'raises',
-                'attr': 'attributes',
-                'yield': 'yields',
-                }
+            'param': 'args',
+            'return': 'returns',
+            'raise': 'raises',
+            'attr': 'attributes',
+            'yield': 'yields',
+        }
         self.section_headers = {
-                'param': 'Args',
-                'return': 'Returns',
-                'raise': 'Raises'
-                }
+            'param': 'Args',
+            'return': 'Returns',
+            'raise': 'Raises'
+        }
 
     def __iter__(self):
         return self.opt.__iter__()
@@ -549,7 +551,7 @@ class GoogledocTools(object):
         """Get mandatory sections"""
         return [s for s in self.opt
                 if s not in self.optional_sections and
-                   s not in self.excluded_sections]
+                s not in self.excluded_sections]
 
     def get_next_section_start_line(self, data):
         """Get the starting line number of next section.
@@ -593,6 +595,7 @@ class DocsTools(object):
     - 'numpydoc': the numpy format for docstrings (using an external module)
 
     """
+
     # TODO: enhance style dependent separation
     # TODO: add set methods to generate style specific outputs
     # TODO: manage C style (\param)
@@ -639,21 +642,21 @@ class DocsTools(object):
                             'styles': {'javadoc': ('@', ':'),  # tuple:  key prefix, separator
                                        'reST': (':', ':'),
                                        'cstyle': ('\\', ' ')}
-                           }
+                            }
         self.tagstyles = list(options_tagstyle['styles'].keys())
         for op in options_tagstyle['keys']:
             self.opt[op] = {}
             for style in options_tagstyle['styles']:
                 self.opt[op][style] = {'name': options_tagstyle['styles'][style][0] + op,
                                        'sep': options_tagstyle['styles'][style][1]
-                                      }
+                                       }
         self.opt['return']['reST']['name'] = ':returns'
         self.opt['raise']['reST']['name'] = ':raises'
         self.groups = {
-                    'param': ['params', 'args', 'parameters', 'arguments'],
-                    'return': ['returns', 'return'],
-                    'raise': ['raises', 'exceptions', 'raise', 'exception']
-                    }
+            'param': ['params', 'args', 'parameters', 'arguments'],
+            'return': ['returns', 'return'],
+            'raise': ['raises', 'exceptions', 'raise', 'exception']
+        }
 
     def autodetect_style(self, data):
         """Determine the style of a docstring,
@@ -797,10 +800,11 @@ class DocsTools(object):
             if isin_start(self.groups[key], line):
                 idx = i
         return idx
-#        search = '\s*(%s)' % '|'.join(self.groups[key])
-#        m = re.match(search, data.lower())
-#        if m:
-#            key_param = m.group(1)
+
+    #        search = '\s*(%s)' % '|'.join(self.groups[key])
+    #        m = re.match(search, data.lower())
+    #        if m:
+    #            key_param = m.group(1)
 
     def get_group_key_index(self, data, key):
         """Get the next groups style's starting line index for a key
@@ -1211,7 +1215,7 @@ class DocString(object):
             'type': None,
             'params': [],
             'spaces': spaces
-            }
+        }
         if docs_raw:
             docs_raw = docs_raw.strip()
             if docs_raw.startswith('"""') or docs_raw.startswith("'''"):
@@ -1228,7 +1232,7 @@ class DocString(object):
                 'return': None,
                 'rtype': None,
                 'raises': []
-                },
+            },
             'out': {
                 'raw': '',
                 'desc': None,
@@ -1238,8 +1242,8 @@ class DocString(object):
                 'rtype': None,
                 'raises': [],
                 'spaces': spaces + ' ' * 2
-                }
             }
+        }
         if '\t' in spaces:
             self.docs['out']['spaces'] = spaces + '\t'
         elif (len(spaces) % 4) == 0 or spaces == '':
@@ -1345,11 +1349,14 @@ class DocString(object):
         else:
             l = raw.strip()
         is_class = False
-        if l.startswith('def ') or l.startswith('class '):
+        if l.startswith('def ') or l.startswith('async def ') or l.startswith('class '):
             # retrieves the type
             if l.startswith('def'):
                 self.element['type'] = 'def'
                 l = l.replace('def ', '')
+            elif l.startswith('async def'):
+                self.element['type'] = 'def'
+                l = l.replace('async def ', '')
             else:
                 self.element['type'] = 'class'
                 l = l.replace('class ', '')
@@ -1381,7 +1388,7 @@ class DocString(object):
         data = self.docs['in']['raw']
         start, end = self.dst.get_doctests_indexes(data)
         while start != -1:
-            print (start, end)
+            print(start, end)
             result = True
             datalst = data.splitlines()
             if self.docs['in']['doctests'] != "":
@@ -1391,14 +1398,16 @@ class DocString(object):
             data = self.docs['in']['raw']
             start, end = self.dst.get_doctests_indexes(data)
         if self.docs['in']['doctests'] != "":
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['doctests'].splitlines()])
+            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in
+                              self.docs['in']['doctests'].splitlines()])
             self.docs['out']['doctests'] = data
         return result
 
     def _extract_docs_description(self):
         """Extract main description from docstring"""
         # FIXME: the indentation of descriptions is lost
-        data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+        data = '\n'.join(
+            [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
         if self.dst.style['in'] == 'groups':
             idx = self.dst.get_group_index(data)
         elif self.dst.style['in'] == 'google':
@@ -1428,7 +1437,8 @@ class DocString(object):
 
     def _extract_groupstyle_docs_params(self):
         """Extract group style parameters"""
-        data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+        data = '\n'.join(
+            [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
         idx = self.dst.get_group_key_line(data, 'param')
         if idx >= 0:
             data = data.splitlines()[idx + 1:]
@@ -1453,7 +1463,8 @@ class DocString(object):
 
     def _extract_tagstyle_docs_params(self):
         """ """
-        data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+        data = '\n'.join(
+            [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
         listed = 0
         loop = True
         maxi = 10000  # avoid infinite loop but should never happen
@@ -1480,7 +1491,8 @@ class DocString(object):
             else:
                 loop = False
         if i > maxi:
-            print("WARNING: an infinite loop was reached while extracting docstring parameters (>10000). This should never happen!!!")
+            print(
+                "WARNING: an infinite loop was reached while extracting docstring parameters (>10000). This should never happen!!!")
 
     def _extract_docs_params(self):
         """Extract parameters description and type from docstring. The internal computed parameters list is
@@ -1488,10 +1500,12 @@ class DocString(object):
 
         """
         if self.dst.style['in'] == 'numpydoc':
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+            data = '\n'.join(
+                [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
             self.docs['in']['params'] += self.dst.numpydoc.get_param_list(data)
         elif self.dst.style['in'] == 'google':
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+            data = '\n'.join(
+                [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
             self.docs['in']['params'] += self.dst.googledoc.get_param_list(data)
         elif self.dst.style['in'] == 'groups':
             self._extract_groupstyle_docs_params()
@@ -1500,7 +1514,8 @@ class DocString(object):
 
     def _extract_groupstyle_docs_raises(self):
         """ """
-        data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+        data = '\n'.join(
+            [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
         idx = self.dst.get_group_key_line(data, 'raise')
         if idx >= 0:
             data = data.splitlines()[idx + 1:]
@@ -1524,7 +1539,8 @@ class DocString(object):
 
     def _extract_tagstyle_docs_raises(self):
         """ """
-        data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+        data = '\n'.join(
+            [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
         listed = 0
         loop = True
         maxi = 10000  # avoid infinite loop but should never happen
@@ -1547,7 +1563,8 @@ class DocString(object):
             else:
                 loop = False
         if i > maxi:
-            print("WARNING: an infinite loop was reached while extracting docstring parameters (>10000). This should never happen!!!")
+            print(
+                "WARNING: an infinite loop was reached while extracting docstring parameters (>10000). This should never happen!!!")
 
     def _extract_docs_raises(self):
         """Extract raises description from docstring. The internal computed raises list is
@@ -1555,10 +1572,12 @@ class DocString(object):
 
         """
         if self.dst.style['in'] == 'numpydoc':
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+            data = '\n'.join(
+                [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
             self.docs['in']['raises'] += self.dst.numpydoc.get_raise_list(data)
         if self.dst.style['in'] == 'google':
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+            data = '\n'.join(
+                [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
             self.docs['in']['raises'] += self.dst.googledoc.get_raise_list(data)
         elif self.dst.style['in'] == 'groups':
             self._extract_groupstyle_docs_raises()
@@ -1568,7 +1587,8 @@ class DocString(object):
     def _extract_groupstyle_docs_return(self):
         """ """
         # TODO: manage rtype
-        data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+        data = '\n'.join(
+            [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
         idx = self.dst.get_group_key_line(data, 'return')
         if idx >= 0:
             data = data.splitlines()[idx + 1:]
@@ -1579,7 +1599,8 @@ class DocString(object):
 
     def _extract_tagstyle_docs_return(self):
         """ """
-        data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+        data = '\n'.join(
+            [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
         start, end = self.dst.get_return_description_indexes(data)
         if start >= 0:
             if end >= 0:
@@ -1596,12 +1617,14 @@ class DocString(object):
     def _extract_docs_return(self):
         """Extract return description and type"""
         if self.dst.style['in'] == 'numpydoc':
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+            data = '\n'.join(
+                [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
             self.docs['in']['return'] = self.dst.numpydoc.get_return_list(data)
             self.docs['in']['rtype'] = None
-# TODO: fix this
+        # TODO: fix this
         elif self.dst.style['in'] == 'google':
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+            data = '\n'.join(
+                [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
             self.docs['in']['return'] = self.dst.googledoc.get_return_list(data)
             self.docs['in']['rtype'] = None
         elif self.dst.style['in'] == 'groups':
@@ -1612,7 +1635,8 @@ class DocString(object):
     def _extract_docs_other(self):
         """Extract other specific sections"""
         if self.dst.style['in'] == 'numpydoc':
-            data = '\n'.join([d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
+            data = '\n'.join(
+                [d.rstrip().replace(self.docs['out']['spaces'], '', 1) for d in self.docs['in']['raw'].splitlines()])
             lst = self.dst.numpydoc.get_list_key(data, 'also')
             lst = self.dst.numpydoc.get_list_key(data, 'ref')
             lst = self.dst.numpydoc.get_list_key(data, 'note')
@@ -1646,13 +1670,32 @@ class DocString(object):
         self._extract_docs_other()
         self.parsed_docs = True
 
+    def prettify_des(self):
+        desc_in_copy: str = self.docs['in']['desc']
+        if desc_in_copy:
+            desc_in_copy = desc_in_copy.strip()
+        if desc_in_copy:
+            if '\n' in desc_in_copy:
+                desc_in_copy = f"Заполнить краткое описание в одну строчку.\n\n{desc_in_copy.strip()}"
+            else:
+                if not desc_in_copy.endswith("."):
+                    desc_in_copy = desc_in_copy + "."
+
+        return desc_in_copy
+
     def _set_desc(self):
         """Sets the global description if any"""
         # TODO: manage different in/out styles
-        if self.docs['in']['desc']:
-            self.docs['out']['desc'] = self.docs['in']['desc']
+        desc_in_copy = self.prettify_des()
+        if desc_in_copy:  # or desc_copy != '':
+            self.docs['out']['desc'] = desc_in_copy
+        elif desc_in_copy == '':
+            default_desc = "Общее описание."
+            self.docs['out']['desc'] = default_desc
         else:
-            self.docs['out']['desc'] = ''
+            default_desc = "Общее описание."
+            self.docs['out']['desc'] = default_desc
+            pass
 
     def _set_params(self):
         """Sets the parameters with types, descriptions and default value if any"""
@@ -1678,7 +1721,8 @@ class DocString(object):
                 if type(e) is tuple:
                     p = (param, '', None, e[1])
                 else:
-                    p = (param, '', None, None)
+                    default_filling = 'Заполнить'
+                    p = (param, default_filling, None, None)
                 self.docs['out']['params'].append(p)
 
     def _set_raises(self):
@@ -1687,8 +1731,8 @@ class DocString(object):
         # manage setting if not mandatory for numpy but optional
         if self.docs['in']['raises']:
             if self.dst.style['out'] != 'numpydoc' or self.dst.style['in'] == 'numpydoc' or \
-                     (self.dst.style['out'] == 'numpydoc' and\
-                    'raise' not in self.dst.numpydoc.get_excluded_sections()):
+                    (self.dst.style['out'] == 'numpydoc' and \
+                     'raise' not in self.dst.numpydoc.get_excluded_sections()):
                 # list of parameters is like: (name, description)
                 self.docs['out']['raises'] = list(self.docs['in']['raises'])
 
@@ -1707,7 +1751,13 @@ class DocString(object):
                     self.docs['out']['return'] = lst[0][1]
                 self.docs['out']['rtype'] = lst[0][2]
         else:
-            self.docs['out']['return'] = self.docs['in']['return']
+            if not self.docs['in']['return'] \
+                    and self.element['type'] != "class" \
+                    and self.docs["out"]["params"] != []:
+                # Заполняем return, если нет retrun, это не класс и нет аргументв функции
+                self.docs['out']['return'] = "Заполнить"
+            else:
+                self.docs['out']['return'] = self.docs['in']['return']
             self.docs['out']['rtype'] = self.docs['in']['rtype']
 
     def _set_other(self):
@@ -1728,9 +1778,9 @@ class DocString(object):
         raw = '\n'
         if self.dst.style['out'] == 'numpydoc':
             spaces = ' ' * 4
-            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + spaces +\
-                                                    l.lstrip() if i > 0 else\
-                                                    l for i, l in enumerate(s.splitlines())])
+            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + spaces + \
+                                              l.lstrip() if i > 0 else \
+                                                  l for i, l in enumerate(s.splitlines())])
             raw += self.dst.numpydoc.get_key_section_header('param', self.docs['out']['spaces'])
             for p in self.docs['out']['params']:
                 raw += self.docs['out']['spaces'] + p[0] + ' :'
@@ -1744,9 +1794,9 @@ class DocString(object):
                 raw += '\n'
         elif self.dst.style['out'] == 'google':
             spaces = ' ' * 2
-            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] +\
-                                                    l.lstrip() if i > 0 else\
-                                                    l for i, l in enumerate(s.splitlines())])
+            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + \
+                                              l.lstrip() if i > 0 else \
+                                                  l for i, l in enumerate(s.splitlines())])
             raw += self.dst.googledoc.get_key_section_header('param', self.docs['out']['spaces'])
             for p in self.docs['out']['params']:
                 raw += self.docs['out']['spaces'] + spaces + p[0]
@@ -1763,17 +1813,19 @@ class DocString(object):
         elif self.dst.style['out'] == 'groups':
             pass
         else:
-            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + l\
-                                                    if i > 0 else l for i, l in enumerate(s.splitlines())])
+            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + l \
+                                                  if i > 0 else l for i, l in enumerate(s.splitlines())])
             if len(self.docs['out']['params']):
                 for p in self.docs['out']['params']:
-                    raw += self.docs['out']['spaces'] + self.dst.get_key('param', 'out') + ' ' + p[0] + sep + with_space(p[1]).strip()
+                    raw += self.docs['out']['spaces'] + self.dst.get_key('param', 'out') + ' ' + p[
+                        0] + sep + with_space(p[1]).strip()
                     if len(p) > 2:
                         if 'default' not in p[1].lower() and len(p) > 3 and p[3] is not None:
                             raw += ' (Default value = ' + str(p[3]) + ')'
                         if p[2] is not None and len(p[2]) > 0:
                             raw += '\n'
-                            raw += self.docs['out']['spaces'] + self.dst.get_key('type', 'out') + ' ' + p[0] + sep + p[2]
+                            raw += self.docs['out']['spaces'] + self.dst.get_key('type', 'out') + ' ' + p[0] + sep + p[
+                                2]
                         raw += '\n'
                     else:
                         raw += '\n'
@@ -1792,7 +1844,9 @@ class DocString(object):
                 if 'raise' in self.dst.numpydoc.get_mandatory_sections() or \
                         (self.docs['out']['raises'] and 'raise' in self.dst.numpydoc.get_optional_sections()):
                     spaces = ' ' * 4
-                    with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + spaces + l.lstrip() if i > 0 else l for i, l in enumerate(s.splitlines())])
+                    with_space = lambda s: '\n'.join(
+                        [self.docs['out']['spaces'] + spaces + l.lstrip() if i > 0 else l for i, l in
+                         enumerate(s.splitlines())])
                     raw += self.dst.numpydoc.get_key_section_header('raise', self.docs['out']['spaces'])
                     if len(self.docs['out']['raises']):
                         for p in self.docs['out']['raises']:
@@ -1806,8 +1860,8 @@ class DocString(object):
                         (self.docs['out']['raises'] and 'raise' in self.dst.googledoc.get_optional_sections()):
                     spaces = ' ' * 2
                     with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + spaces + \
-                                                            l.lstrip() if i > 0 else \
-                                                            l for i, l in enumerate(s.splitlines())])
+                                                      l.lstrip() if i > 0 else \
+                                                          l for i, l in enumerate(s.splitlines())])
                     raw += self.dst.googledoc.get_key_section_header('raise', self.docs['out']['spaces'])
                     if len(self.docs['out']['raises']):
                         for p in self.docs['out']['raises']:
@@ -1816,12 +1870,14 @@ class DocString(object):
         elif self.dst.style['out'] == 'groups':
             pass
         else:
-            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + l if i > 0 else l for i, l in enumerate(s.splitlines())])
+            with_space = lambda s: '\n'.join(
+                [self.docs['out']['spaces'] + l if i > 0 else l for i, l in enumerate(s.splitlines())])
             if len(self.docs['out']['raises']):
                 if not self.docs['out']['params'] and not self.docs['out']['return']:
                     raw += '\n'
                 for p in self.docs['out']['raises']:
-                    raw += self.docs['out']['spaces'] + self.dst.get_key('raise', 'out') + ' ' + p[0] + sep + with_space(p[1]).strip() + '\n'
+                    raw += self.docs['out']['spaces'] + self.dst.get_key('raise', 'out') + ' ' + p[
+                        0] + sep + with_space(p[1]).strip() + '\n'
             raw += '\n'
         return raw
 
@@ -1835,7 +1891,9 @@ class DocString(object):
         if self.dst.style['out'] == 'numpydoc':
             raw += '\n'
             spaces = ' ' * 4
-            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + spaces + l.lstrip() if i > 0 else l for i, l in enumerate(s.splitlines())])
+            with_space = lambda s: '\n'.join(
+                [self.docs['out']['spaces'] + spaces + l.lstrip() if i > 0 else l for i, l in
+                 enumerate(s.splitlines())])
             raw += self.dst.numpydoc.get_key_section_header('return', self.docs['out']['spaces'])
             if self.docs['out']['rtype']:
                 rtype = self.docs['out']['rtype']
@@ -1852,7 +1910,8 @@ class DocString(object):
                         raw += self.docs['out']['spaces']
                         if ret_elem[0]:
                             raw += ret_elem[0] + ' : '
-                        raw += rtype + '\n' + self.docs['out']['spaces'] + spaces + with_space(ret_elem[1]).strip() + '\n'
+                        raw += rtype + '\n' + self.docs['out']['spaces'] + spaces + with_space(
+                            ret_elem[1]).strip() + '\n'
                     else:
                         # There can be a problem
                         raw += self.docs['out']['spaces'] + rtype + '\n'
@@ -1860,13 +1919,14 @@ class DocString(object):
             # case of a unique return
             elif self.docs['out']['return'] is not None:
                 raw += self.docs['out']['spaces'] + rtype
-                raw += '\n' + self.docs['out']['spaces'] + spaces + with_space(self.docs['out']['return']).strip() + '\n'
+                raw += '\n' + self.docs['out']['spaces'] + spaces + with_space(
+                    self.docs['out']['return']).strip() + '\n'
         elif self.dst.style['out'] == 'google':
             raw += '\n'
             spaces = ' ' * 2
-            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + spaces +\
-                                                    l.lstrip() if i > 0 else\
-                                                    l for i, l in enumerate(s.splitlines())])
+            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + spaces + \
+                                              l.lstrip() if i > 0 else \
+                                                  l for i, l in enumerate(s.splitlines())])
             raw += self.dst.googledoc.get_key_section_header('return', self.docs['out']['spaces'])
             if self.docs['out']['rtype']:
                 rtype = self.docs['out']['rtype']
@@ -1899,31 +1959,41 @@ class DocString(object):
         elif self.dst.style['out'] == 'groups':
             pass
         else:
-            with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + l if i > 0 else l for i, l in enumerate(s.splitlines())])
+            with_space = lambda s: '\n'.join(
+                [self.docs['out']['spaces'] + l if i > 0 else l for i, l in enumerate(s.splitlines())])
             if self.docs['out']['return']:
                 if not self.docs['out']['params']:
                     raw += '\n'
-                raw += self.docs['out']['spaces'] + self.dst.get_key('return', 'out') + sep + with_space(self.docs['out']['return'].rstrip()).strip() + '\n'
+                raw += self.docs['out']['spaces'] + self.dst.get_key('return', 'out') + sep + with_space(
+                    self.docs['out']['return'].rstrip()).strip() + '\n'
             if self.docs['out']['rtype']:
                 if not self.docs['out']['params']:
                     raw += '\n'
-                raw += self.docs['out']['spaces'] + self.dst.get_key('rtype', 'out') + sep + self.docs['out']['rtype'].rstrip() + '\n'
+                raw += self.docs['out']['spaces'] + self.dst.get_key('rtype', 'out') + sep + self.docs['out'][
+                    'rtype'].rstrip() + '\n'
         return raw
 
     def _set_raw(self):
         """Sets the output raw docstring"""
         sep = self.dst.get_sep(target='out')
         sep = sep + ' ' if sep != ' ' else sep
-        with_space = lambda s: '\n'.join([self.docs['out']['spaces'] + l if i > 0 else l for i, l in enumerate(s.splitlines())])
+        with_space = lambda s: '\n'.join(
+            [self.docs['out']['spaces'] + l if i > 0 else l for i, l in enumerate(s.splitlines())])
 
         # sets the description section
         raw = self.docs['out']['spaces'] + self.quotes
         desc = self.docs['out']['desc'].strip()
         if not desc or not desc.count('\n'):
-            if not self.docs['out']['params'] and not self.docs['out']['return'] and not self.docs['out']['rtype'] and not self.docs['out']['raises']:
+            if not self.docs['out']['params'] and not self.docs['out']['return'] and not self.docs['out'][
+                'rtype'] and not self.docs['out']['raises']:
                 raw += desc if desc else self.trailing_space
                 raw += self.quotes
-                self.docs['out']['raw'] = raw.rstrip()
+                if self.element["type"] == "class":
+                    # добавляем пустую строку после докстринга класса
+                    raw = raw.rstrip()
+                    self.docs['out']['raw'] = raw + "\n\n"
+                else:
+                    self.docs['out']['raw'] = raw.rstrip()
                 return
         if not self.first_line:
             raw += '\n' + self.docs['out']['spaces']
@@ -1948,7 +2018,15 @@ class DocString(object):
 
         if raw.count(self.quotes) == 1:
             raw += self.docs['out']['spaces'] + self.quotes
-        self.docs['out']['raw'] = raw.rstrip()
+
+        if self.element["type"] == "class":
+            # добавляем пустую строку после докстринга класса
+            raw = raw.rstrip()
+            self.docs['out']['raw'] = raw + "\n\n"
+        else:
+            self.docs['out']['raw'] = raw.rstrip()
+
+        pass
 
     def generate_docs(self):
         """Generates the output docstring"""

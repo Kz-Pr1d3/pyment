@@ -14,7 +14,8 @@ __licence__ = "GPL3"
 __version__ = "0.3.3"
 __maintainer__ = "A. Daouzli"
 
-#TODO:
+
+# TODO:
 # -generate a return if return is used with argument in element
 # -generate raises if raises are used
 # -generate diagnosis/statistics
@@ -33,6 +34,7 @@ class PyComment(object):
     The changes are then provided in a patch file.
 
     """
+
     def __init__(self, input_file, input_style=None, output_style='reST', quotes='"""', first_line=True,
                  convert_only=False, config_file=None, ignore_private=False, **kwargs):
         """Sets the configuration including the source to proceed and options.
@@ -72,9 +74,9 @@ class PyComment(object):
         :returns: the list of elements
 
         """
-        #TODO manage decorators
-        #TODO manage default params with strings escaping chars as (, ), ', ', #, ...
-        #TODO manage elements ending with comments like: def func(param): # blabla
+        # TODO manage decorators
+        # TODO manage default params with strings escaping chars as (, ), ', ', #, ...
+        # TODO manage elements ending with comments like: def func(param): # blabla
         elem_list = []
         reading_element = None
         reading_docs = None
@@ -104,7 +106,7 @@ class PyComment(object):
                 elem += l
                 if l.endswith(':'):
                     reading_element = 'end'
-            elif (l.startswith('def ') or l.startswith('class ')) and not reading_docs:
+            elif (l.startswith('def ') or (l.startswith('async def ')) or l.startswith('class ')) and not reading_docs:
                 if self.ignore_private and l[l.find(' '):].strip().startswith("__"):
                     continue
                 reading_element = 'start'
@@ -336,9 +338,9 @@ class PyComment(object):
 
     def _windows_rename(self, tmp_filename):
         """ Workaround the fact that os.rename raises an OSError on Windows
-        
+
         :param tmp_filename: The file to rename
-    
+
         """
 
         os.remove(self.input_file) if os.path.isfile(self.input_file) else None
