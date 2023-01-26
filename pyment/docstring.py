@@ -1676,7 +1676,7 @@ class DocString(object):
             desc_in_copy = desc_in_copy.strip()
         if desc_in_copy:
             if '\n' in desc_in_copy:
-                desc_in_copy = f"Заполнить краткое описание в одну строчку.\n\n{desc_in_copy.strip()}"
+                desc_in_copy = f"TODO Краткое описание в одну строчку.\n\n{desc_in_copy.strip()}"
             else:
                 if not desc_in_copy.endswith("."):
                     desc_in_copy = desc_in_copy + "."
@@ -1690,10 +1690,10 @@ class DocString(object):
         if desc_in_copy:  # or desc_copy != '':
             self.docs['out']['desc'] = desc_in_copy
         elif desc_in_copy == '':
-            default_desc = "Общее описание."
+            default_desc = "TODO Описание."
             self.docs['out']['desc'] = default_desc
         else:
-            default_desc = "Общее описание."
+            default_desc = "TODO Описание."
             self.docs['out']['desc'] = default_desc
             pass
 
@@ -1755,7 +1755,7 @@ class DocString(object):
                     and self.element['type'] != "class" \
                     and self.docs["out"]["params"] != []:
                 # Заполняем return, если нет retrun, это не класс и нет аргументв функции
-                self.docs['out']['return'] = "Заполнить"
+                self.docs['out']['return'] = "TODO Заполнить"
             else:
                 self.docs['out']['return'] = self.docs['in']['return']
             self.docs['out']['rtype'] = self.docs['in']['rtype']
